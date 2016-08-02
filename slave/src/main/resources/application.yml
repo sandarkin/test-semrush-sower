@@ -1,0 +1,11 @@
+eureka:
+  instance:
+    hostname: localhost
+    metadata-map:
+      instanceId: slave ${server.port}
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8080/eureka/
+spring:
+  application:
+    name: slave

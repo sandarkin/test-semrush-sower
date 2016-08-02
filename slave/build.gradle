@@ -1,0 +1,24 @@
+group 'ru.sandarkin.semrush'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+configurations {
+  agent
+  compile.exclude module: "spring-boot-starter-tomcat"
+  compile.exclude group: "org.slf4j", module: "slf4j-log4j12"
+}
+
+dependencies {
+  provided "org.projectlombok:lombok"
+  compile "org.springframework.boot:spring-boot-starter-actuator"
+  compile "org.springframework.boot:spring-boot-starter-web"
+  compile "org.springframework.boot:spring-boot-starter-jetty"
+  compile "org.springframework.cloud:spring-cloud-starter-eureka"
+}
+
+bootRun {
+  if (project.hasProperty('jvmArgs')) {
+    jvmArgs project.jvmArgs.split('\\s+')
+  }
+}
