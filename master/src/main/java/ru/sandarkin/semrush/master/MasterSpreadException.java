@@ -2,6 +2,7 @@ package ru.sandarkin.semrush.master;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.sandarkin.semrush.master.model.Project;
 
 @Getter
 @Setter

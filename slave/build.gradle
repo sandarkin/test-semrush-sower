@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 group 'ru.sandarkin.semrush'
 version '1.0-SNAPSHOT'
 
@@ -14,11 +16,68 @@ dependencies {
   compile "org.springframework.boot:spring-boot-starter-actuator"
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.springframework.boot:spring-boot-starter-jetty"
+  compile "org.springframework.boot:spring-boot-starter-actuator"
   compile "org.springframework.cloud:spring-cloud-starter-eureka"
+  compile "org.springframework.cloud:spring-cloud-starter-hystrix"
+}
+
+task generateSources(type: Copy) {
+  if (project.hasProperty('jvmArgs')) {
+    def Date now = new Date()
+    def nowTime = now.time;
+
+    from ('src/main/java')
+    into "$buildDir/generated-src/"+nowTime
+  }
+}
+
+compileJava.source generateSources.outputs.files
+compileJava.dependsOn generateSources
+
+compileJava.doFirst {
+  if (project.hasProperty('jvmArgs')) {
+    def result = jvmArgs.split('\\s+').inject([:]) { map, token ->
+      token.split('=').with { map[it[0].replaceAll('-D', '')] = it[1] }
+      map
+    }
+    def serviceFile = new File(generateSources.destinationDir, "/ru/sandarkin/semrush/slave/SlaveService.java")
+    ant.replace(file: serviceFile, token: 'turbinePort', value: result['server.port'])
+  }
+}
+
+compileJava {
+  destinationDir = new File(generateSources.destinationDir, "/classes")
+}
+
+sourceSets {
+  main {
+    java {
+      exclude 'ru/sandarkin/semrush/slave/**'
+      exclude 'ru/sandarkin/semrush/slave/model/**'
+    }
+  }
+}
+
+classes {
+  doFirst {
+    project.sourceSets.main.runtimeClasspath += files(compileJava.destinationDir.absolutePath)
+  }
+}
+
+bootRepackage {
+  mainClass = 'ru.sandarkin.semrush.slave.SlaveApplication'
 }
 
 bootRun {
-  if (project.hasProperty('jvmArgs')) {
-    jvmArgs project.jvmArgs.split('\\s+')
+  doFirst {
+    if (project.hasProperty('jvmArgs')) {
+      jvmArgs project.jvmArgs.split('\\s+')
+    }
+
+    classpath += files(compileJava.destinationDir.absolutePath)
+
   }
+  classpath += files(compileJava.destinationDir.absolutePath)
+  println 'Load from ' + compileJava.destinationDir.absolutePath
+  main = 'ru.sandarkin.semrush.slave.SlaveApplication'
 }

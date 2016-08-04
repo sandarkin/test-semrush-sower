@@ -1,4 +1,4 @@
-package ru.sandarkin.semrush.slave;
+package ru.sandarkin.semrush.slave.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package ru.sandarkin.semrush.master;
+package ru.sandarkin.semrush.master.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

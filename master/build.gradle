@@ -16,19 +16,15 @@ dependencies {
   compile "org.springframework.boot:spring-boot-starter-web"
   compile "org.springframework.boot:spring-boot-starter-jetty"
   compile "org.springframework.boot:spring-boot-starter-aop"
+  compile "org.springframework.boot:spring-boot-starter-actuator"
   compile "org.springframework.cloud:spring-cloud-starter-eureka"
   compile "org.springframework.cloud:spring-cloud-starter-eureka-server"
   compile "org.springframework.cloud:spring-cloud-starter-hystrix"
+  compile "org.springframework.cloud:spring-cloud-starter-hystrix-dashboard"
+  compile "org.springframework.cloud:spring-cloud-starter-turbine"
+  compile "com.nurkiewicz.asyncretry:asyncretry:0.0.7"
 }
 
-/*
-sourceCompatibility = 1.5
-
-repositories {
-    mavenCentral()
+springBoot {
+  requiresUnpack = ['com.netflix.eureka:eureka-core','com.netflix.eureka:eureka-client']
 }
-
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-}
-*/
